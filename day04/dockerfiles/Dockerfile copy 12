@@ -1,0 +1,29 @@
+FROM  maven:3.6.1-jdk-8-alpine AS buildapp
+
+WORKDIR /app
+COPY pom.xml .
+COPY src .
+
+RUN mvn clean package -Dmaven.test.skip=true
+
+# /app 下面有 target
+RUN pwd && ls -l
+
+RUN cp /app/target/*.jar  /app.jar
+RUN ls -l
+### 以上第一阶段结束，我们得到了一个 app.jar
+
+
+## 只要一个JRE
+FROM openjdk:8-jre-alpine
+#FROM openjdk:8u282-slim
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+LABEL maintainer="534096094@qq.com"
+# 把上一个阶段的东西复制过来
+COPY --from=buildapp /app.jar  /app.jar
+
+# docker run -e JAVA_OPTS="-Xmx512m -Xms33 -" -e PARAMS="--spring.profiles=dev --server.port=8080" -jar /app/app.jar 
+# 启动java的命令
+ENV JAVA_OPTS=""
+ENV PARAMS=""
+ENTRYPOINT [ "sh", "-c", "java -Djava.security.egd=file:/dev/./urandom $JAVA_OPTS -jar /app.jar $PARAMS" ]

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: canary-test
+  namespace: default
+spec:
+  selector:
+    app: canary-nginx
+  type: NodePort  ### 浏览器可以直接访问
+  ports:
+  - name: canary-test
+    port: 80   ### 
+    targetPort: 80  ### Pod的访问端口
+    protocol: TCP
+    nodePort: 31666  ### 机器上开的端口，浏览器访问

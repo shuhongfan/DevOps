@@ -1,0 +1,6 @@
+# env的坑
+FROM nginx
+WORKDIR /usr/share/nginx/html
+
+
+#剩下都是原来 nginx 默认的

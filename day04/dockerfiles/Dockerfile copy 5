@@ -1,0 +1,27 @@
+# env的坑
+FROM alpine
+
+# 开用户
+#RUN adduser -u 1000 -g 1000
+# 以后的所有命令会用 abc:abc 来执行。有可能没有执行权限
+# 容器中的ROOT虽然不是linux宿主机的真实root，但是可以改掉这个镜像的所有
+
+
+
+USER 1000:1000
+
+# 把复制来的文件给用户所有权
+COPY --chown=1000:1000   *.txt   /a.txt
+
+
+RUN ls -l /
+
+#不是root不能写
+RUN  echo 2222 >> a.txt
+
+
+
+
+
+
+

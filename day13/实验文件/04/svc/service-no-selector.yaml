@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluster-service-no-selector
+  namespace: default
+spec:
+  ## 不选中Pod而在下面手动定义可以访问的EndPoint
+  type: ClusterIP 
+  ports:
+  - name: abc
+    port: 80  ## 访问当前service 的 80
+    targetPort: 80  ## 派发到Pod的 80
+### 场景：Pod要访问 MySQL。 MySQL单独部署到很多机器，每次记ip麻烦
+### 集群内创建一个Service，实时的可以剔除EP信息。反向代理集群外的东西。
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: cluster-service-no-selector  ## 和service同名
+  namespace: default
+subsets:
+- addresses:
+  - ip: 192.168.169.184
+  - ip: 192.168.169.165
+  - ip: 39.156.69.79
+  ports:
+  - name: abc  ## ep和service要是一样的
+    port: 80
+    protocol: TCP

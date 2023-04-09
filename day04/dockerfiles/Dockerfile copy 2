@@ -1,0 +1,40 @@
+#可以在任意位置定义，并在以后取值使用，
+#使用--build-arg version=3.13 改变；以我们传入的为准
+ARG version=3.13.4
+# 3.13  
+FROM alpine:$version
+
+LABEL maintainer="leifengyang" a=b \
+c=dd
+
+#构建期+运行期都可以生效；但是只能在运行期进行修改
+#怎么修改：构建期修改和运行期修改
+#构建期不能改 ENV的值
+#运行期：docker run -e app=atguigu 就可以修改
+ENV app=itdachang
+
+
+##测试构建期间生效
+RUN echo $app
+
+RUN echo $param
+
+# 定义以后的剩下环节（不包括运行时）能生效：取值$param；
+#可以在构建时进行变化，docker build
+# ARG不像ENV不能并排写
+ARG param=123456  
+ARG msg="hello docker"
+
+#构建时期我们会运行的指令(根据Dockerfile创建一个镜像的整个过程时期)
+RUN echo 11111
+
+RUN echo $param
+RUN echo $msg
+
+
+#运行时期我们会运行的指令(根据之前创建的镜像启动一个容器，容器启动默认运行的命令)
+#（docker run/docker start）
+# CMD和ENTRYPOINT` 都是指定的运行时的指令
+
+CMD ["/bin/sh","-c","echo 1111;echo $param;echo app_${app}"]
+

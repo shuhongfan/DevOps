@@ -1,0 +1,22 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-command-test
+  namespace: hello
+spec:  # 指定规格信息
+  containers:  # 指定要启动一个什么样的容器
+  - image: nginx  #指定镜像。默认会启动一个nginx容器
+    name: command-test  
+    command:    # 以这里为准  ## redis 主节点  redis 启动命令
+      - /bin/sh
+      - -c
+      - "echo $(msg);sleep 3600;"
+    env:
+      - name: msg
+        value: "hello msg"   ## Dockerfile  CMD  能用到
+    # 直接覆盖容器的默认命令  Dockerfile  ENTRYPOINT CMD 指定容器的启动命令
+
+
+
+
+

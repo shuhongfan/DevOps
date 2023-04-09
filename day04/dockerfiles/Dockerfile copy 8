@@ -1,0 +1,37 @@
+FROM alpine
+
+RUN mkdir /hello && mkdir /app
+RUN echo 1111 > /hello/a.txt
+RUN echo 222 > /app/b.txt
+#挂载 容器的指定文件夹，如果不存在就创建。
+#指定了 VOLUME ,即使启动容器没有指定 -v 参数，我们也会自动进行匿名卷挂载
+# 容器内的 /hello ，/app 文件夹，请你在使用镜像启动容器的时候，自动给宿主机上挂载 
+
+# VOLUME挂载出去的东西，容器改变也不会最终commit的时候生效
+# -v 使用 VOLUME和-v挂载出去的目录（外面变，容器里面变）。但是
+# 所有改变也生效了，1）、但是 docker commit 提交当前容器的所有变化为镜像的时候，就会丢弃
+# 2）、VOLUME [ "/hello","/app" ] 容器以后自动挂载，在Dockerfile中对VOLUME的所有修改都不生效
+# 3)、挂载只有一点就是方便在外面修改，或者把外面的东西直接拿过来
+# 所以这个写在最后
+# JAVA 日志都要挂外面 /app/log
+# VOLUME ["/log"]
+
+VOLUME [ "/hello","/app" ]
+# VOLUME 指定的挂载目录
+
+# 这两句话没有生效
+RUN echo 6666 >> /hello/a.txt
+RUN echo 8888 >> /app/b.txt
+
+RUN cd /hello && echo 88888 >>a.txt
+
+
+#暴露 ，这个只是一个声明；给程序员看。docker也能看到
+# docker -d -P（随机分配端口，）
+EXPOSE 8080
+EXPOSE 999
+
+# 
+CMD ping baidu.com
+
+

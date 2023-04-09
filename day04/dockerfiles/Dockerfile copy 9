@@ -1,0 +1,43 @@
+FROM alpine
+
+
+
+# ENTRYPOINT: 入口（真正的门）
+# ENTRYPOINT [ "ping" ]
+
+# 命令（进门的时候带口令）
+# 最终的用法: CMD是给ENTRYPOINT提供参数的
+
+#CMD可以被修改
+# CMD ping baidu.com
+
+
+# ENTRYPOINT + CMD = 容器的完整启动命令
+
+# 这是启动命令
+# ENTRYPOINT ping + CMD baidu.com = 错误
+
+#多个CMD只有最后一次生效
+# CMD ping baidu.com
+
+
+# ["echo","${param}"] 不是bash -c的方式，取不出环境变量性  【】
+# echo $param     = ["/bin/sh","-c","多长的命令都写在这里  echo ${param}"]
+
+# ENTRYPOINT或者CMD作为唯一入口，只能写一个，最后一个生效
+# ENTRYPOINT ping atguigu.com
+
+# RUN，CMD，ENTRYPOINT
+# []:  ["/bin/sh","-c"] = shell
+# shell:
+
+
+
+
+
+
+
+
+
+
+

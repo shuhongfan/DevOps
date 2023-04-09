@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "pod-life-02"
+  namespace: default
+  labels:
+    app: "pod-life-02"
+spec:
+  volumes:
+  - name: content-vol
+    emptyDir: {}
+  initContainers:  ## Pod在启动containers之前，先要【运行完】initContainers的所有容器，所以这些容器必须有终结，不能一直运行
+  - name: init-c-01
+    image: alpine  ### 必须有终结的那个时刻，一般不要用一直启动的镜像
+    command: ["/bin/sh","-c","echo 12222222 > /app/index.html;sleep 30;"]
+    volumeMounts: 
+     - name: content-vol
+       mountPath: /app
+  # - name: init-c-02
+  #   image: alpine  ### 必须有终结的那个时刻，一般不要用一直启动的镜像
+  #   command: ["/bin/sh","-c","echo 12222222 > /app/index.html;sleep 30;"]
+  #   volumeMounts: 
+  #    - name: content-vol
+  #      mountPath: /app
+  containers:
+  ### docker run alpine 没有在后台一直启动的程序
+  - name: pod-life-01
+    image: "nginx" #默认的启动命令是启动nginx。nginx启动在后台一直有了
+    volumeMounts: 
+     - name: content-vol
+       mountPath: /usr/share/nginx/html
+  - name: pod-life-02
+    image: "alpine"  #pod里面的containers都必须能启动起来，Pod会不断的重启这个容器
+    command: ["/bin/sh","-c","sleep 30"]
+
+

@@ -1,0 +1,14 @@
+kind: Pod
+apiVersion: v1
+# 以上 type信息结束
+metadata:
+  name: my-tomcat-test  # 资源的名字
+# 以上是元数据部分
+spec:  # 指定规格信息
+  containers:  # 指定要启动一个什么样的容器
+  - image: tomcat   #指定镜像
+    name: my-tomcat  #容器的名字
+# 以上是资源的完整规格描述部分 以上是我们必须会编写的
+status: {}
+#status不用我们写，是k8s集群实时更新的状态信息，
+#只要资源变化，kubelet会请求api-server保存最新的资源状态信息

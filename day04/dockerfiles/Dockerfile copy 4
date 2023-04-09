@@ -1,0 +1,37 @@
+# env的坑
+FROM alpine
+
+
+#把上下文Context指定的内容添加到镜像中，如果是压缩包，自动解压，
+# 把当前内容复制到这个 alpine小系统里面
+# 如果是远程文件，自动下载；
+# 如果是压缩包，自动解压；
+ADD https://download.redis.io/releases/redis-6.2.1.tar.gz  /dest/
+
+#本地linux系统的内容文件添加进去  【宿主机   镜像内】
+# docker build -t demo:test  -f Dockerfile 【.：上下文的文件路径】    ： .代表上下文环境；代表Dockerfile所在的当前目录
+#自动解压
+# 压缩包位置：/root/dockerfiles
+ADD *.tar.gz   /app/
+# RUN ls -l
+
+# 相当于给当前容器开一个用户，以后的命令可以用这个用户运行
+# 不自动解压和下载
+# COPY nginx 
+# 以容器的用户：
+# RUN  "useradd "
+COPY  --chown=redis:redis   *.tar.gz  /redis/
+# RUN指令上下并没有上下文关系；
+# RUN cd /dest
+
+# 当前还是列举的根目录
+# RUN ls -l
+RUN cd /dest && ls -l
+RUN cd /app && ls -l
+RUN cd /redis && ls -l
+#把上下文Context指定的内容复制到镜像中
+# COPY 
+
+
+
+

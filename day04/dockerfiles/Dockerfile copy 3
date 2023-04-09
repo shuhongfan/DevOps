@@ -1,0 +1,33 @@
+# env的坑
+FROM alpine
+
+# ARG msg=hello
+
+# # ENV肯定能引用ARG
+# ENV name=${msg}
+
+
+# RUN echo ${name}
+
+# RUN echo ${msg}
+# ENV只能运行期改掉
+ENV msg1=hello
+ENV msg2=$msg1
+# 以上构建期间就已经确定好值了；ENV持久化问题。
+
+RUN echo ${msg1}
+RUN echo ${msg2}
+
+# msg1=msg2没问题；如果我运行期修改了msg1=66666的值，请求msg1;msg2输出什么
+# 结果输出： 6666   hello;  传值不是传引用？？？原因：
+# docker build的时候，env环境的信息会固化，直接在镜像配置里面就已经写死，msg1=hello，msg2=hello。
+# -e 真的只能修改当前env本身
+# 为什么运行期间能用ENV定义的所有值，一定是ENV存在某个地方
+# 
+CMD ["/bin/sh","-c","echo ${msg1};echo ${msg2};"]
+#
+
+
+
+
+

@@ -1,0 +1,43 @@
+FROM alpine
+ENV url=baidu.com
+
+#CMD ["ping","baidu.com"]
+
+# CMD ["useradd","-u","1000","-g","2000"]
+
+# CMD ["ping","${url}"]  取不出变量
+
+# CMD ping ${url}
+
+
+# 官方都是建议使用 []方式
+# CMD ["/bin/sh","-c","ping ${url}"]
+
+
+
+# ENTRYPOINT ping baidu.com + CMD怎么写都没用，容器启动都是以ENTRYPOINT的完整命令为准
+
+
+# java -jar xxxx.jar --spring.profile=dev --server.port=8888
+
+
+# 这两个合在一起不能是错误的命令
+
+#官方推荐的写法,，变化的写CMD，而CMD是提供参数给ENTRYPOINT
+# docker run imageName  cmd1  一旦传递了cmd1，CMD指定的所有参数都会被覆盖，
+# 自定义参数的情况下一定要传完
+CMD [ "5","baidu.com" ]
+
+#exec的写法 不变的写 ENTRYPOINT；未来他是容器启动的唯一入口，
+ENTRYPOINT [ "ping","-c" ]
+
+
+
+
+
+
+
+
+
+
+

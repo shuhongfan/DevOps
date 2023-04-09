@@ -1,0 +1,13 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-nginx-pod-test
+  namespace: hello
+  labels:
+     aa: bb
+     bb: dd
+spec:  # 指定规格信息
+  containers:  # 指定要启动一个什么样的容器
+  - image: nginx   #指定镜像
+    name: my-nginx  #容器的名字
+

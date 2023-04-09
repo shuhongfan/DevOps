@@ -1,0 +1,23 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-mysql
+  namespace: hello
+  labels:
+     aa: bb
+     bb: dd
+spec:  # 指定规格信息
+  containers:  # 指定要启动一个什么样的容器
+  ## docker run -e = env   --name=name -v=volumeMounts -w /usr/  /bin/bash
+  - image: mysql:5.7.34  #指定镜像
+    name: mysql  #容器的名字 数据就在容器里面  docker run mysql.
+    # ports: #指定容器暴露哪些端口  -p  
+    env:
+     - name: MYSQL_ROOT_PASSWORD
+       value: "123456"
+     - name: MYSQL_DATABASE
+       value: "itdachang"
+    workingDir: "/usr/" # Dockerfiel WORKDIR
+    #volumeMounts: 挂载
+
+

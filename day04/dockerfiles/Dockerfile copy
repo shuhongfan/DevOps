@@ -1,0 +1,38 @@
+# 不可以引用多个
+FROM alpine
+
+
+LABEL maintainer="leifengyang @ dd" \
+abc=def \
+aaa=bbb cccc=ddd   
+
+
+#指定构建参数【构建时】
+ARG aaa=aaaa
+
+#指定环境变量【为RUN以及CMD指定环境变量的】
+ENV  parm=11111
+
+
+# shell* 形式； bash -c "echo 11111"
+RUN echo $parm  
+
+#  exec 形式。$parm 默认拿不到ENV
+RUN ["echo","$aaa"]
+
+# 错误语法  RUN ["echo",'$parm']
+
+# 错误语法  RUN ["echo",$parm]
+
+# 错误语法。NOT FOUND(取不出环境变量【ENV】,ARG也是取不出)
+#RUN ["echo",'${aaa}']
+
+#RUN ["echo",${parm}]
+
+#都是可以启动容器的命令有什么不同
+#CMD sleep 1;echo $parm;echo $aaa;
+
+# 都是可以启动容器的命令有什么不同
+ENTRYPOINT sleep 1;echo $parm;
+
+

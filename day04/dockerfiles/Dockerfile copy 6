@@ -1,0 +1,30 @@
+# env的坑
+FROM alpine
+
+RUN pwd && ls -l
+
+# 为以下所有的命令运行指定了基础目录
+WORKDIR /app
+
+# 可以为进入容器指定一个默认目录
+WORKDIR abc
+
+##比如我们的nginx镜像可以做成这样
+#WORKDIR /usr/share/nginx/html
+
+# /app/abc  多个WORKDIR可以嵌套
+RUN pwd && ls -l
+
+#复制到当前目录下
+COPY *.txt   ./
+
+RUN  pwd && ls -l
+
+CMD ping baidu.com
+
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  canary-dep-v2
+  namespace: default
+  labels:
+    app:  canary-dep-v2
+spec:
+  selector:
+    matchLabels:
+      app: canary-nginx
+      v: v222
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: canary-nginx
+        v: v222
+    spec:
+      # initContainers:
+        # Init containers are exactly like regular containers, except:
+          # - Init containers always run to completion.
+          # - Each init container must complete successfully before the next one starts.
+      containers:
+      - name:  nginx
+        image:  nginx
