@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gitlab
+  name: gitlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab
+  template:
+    metadata:
+      labels:
+        app: gitlab
+    spec:
+      containers:
+        - image: gitlab/gitlab-ce:latest
+          name: gitlab
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "300m"
+            limits:
+              memory: "3Gi"
+              cpu: "1000m"
+          ports:
+            - containerPort: 443
+            - containerPort: 80
+            - containerPort: 22
+          volumeMounts:
+            - mountPath: /etc/gitlab
+              name: git-data
+              subPath: gitlab
+            - mountPath: /var/opt/gitlab/git-data
+              name: git-data
+              subPath: gitlab
+      restartPolicy: Always
+      volumes:
+        - name: git-data
+          persistentVolumeClaim:
+            claimName: git-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: git-data
+  labels:
+    app: git-data
+spec:
+  storageClassName: rook-ceph-block
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: gitlab
+  name: gitlab
+spec:
+  ports:
+    - name: git-ssl
+      port: 443
+      targetPort: 443
+    - name: git-http
+      port: 80
+      targetPort: 80
+    - name: git-ssh
+      port: 22
+      targetPort: 22
+  selector:
+    app: gitlab
+  type: NodePort

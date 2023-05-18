@@ -1,0 +1,16 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  creationTimestamp: null
+  name: php-apache
+spec:
+  maxReplicas: 10
+  minReplicas: 1
+  scaleTargetRef:  ### 将要扩展的目标引用
+    apiVersion: apps/v1
+    kind: Deployment
+    name: php-apache  ## Pod limit: 100m  
+  targetCPUUtilizationPercentage: 50  ### cpu使用超过50%就扩容，低于就缩容
+
+### 计算方式  100m   100m   100m   100m  100m  
+#  kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"

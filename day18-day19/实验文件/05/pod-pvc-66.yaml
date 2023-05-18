@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "nginx-666-pvc-000"
+  namespace: default
+  labels:
+    app: "nginx-666-pvc-000"
+spec:
+  containers:
+  - name: nginx-666-pvc-000
+    image: "nginx"
+    ports:
+    - containerPort:  80
+      name:  http
+    volumeMounts:
+    - name: localtime
+      mountPath: /etc/localtime
+    - name: html
+      mountPath: /usr/share/nginx/html
+  volumes:
+    - name: localtime
+      hostPath:
+        path: /usr/share/zoneinfo/Asia/Shanghai
+    - name: html
+      persistentVolumeClaim:
+         claimName:  nginx-666-pvc  ### 你的申请书的名字
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-666-pvc
+  namespace: default
+  labels:
+    app: nginx-666-pvc
+spec:
+  storageClassName: managed-nfs-storage  ## 存储类的名字
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 70m
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: MYAPP
+#   namespace: default
+# spec:
+#   selector:
+#     app: MYAPP
+#   type: ClusterIP
+#   ports:
+#   - name: MYAPP
+#     port: 
+#     targetPort: 
+#     protocol: TCP
+#     nodePort: 

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-volume-10m
+  labels:
+    type: local
+spec:
+  storageClassName: my-nfs-storage
+  capacity:
+    storage: 10m
+  accessModes:
+    - ReadWriteOnce 
+  nfs:  ## 使用nfs存储系统
+    server: 10.170.11.8  ## 没type
+    path: /nfs/data/haha  ### abc文件夹提前创建

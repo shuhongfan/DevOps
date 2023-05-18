@@ -1,0 +1,41 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: session-test
+  namespace: default
+spec:
+  rules:
+  - host: itzongchang.com
+    http:
+      paths:
+      - path: /   ### 如果以前这个域名下的这个路径相同的功能有配置过，以最后一次生效
+        pathType: Prefix
+        backend:
+          service:
+            name: session-affinity   ###
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nativecn.com-tls-ingress
+  namespace: default
+spec:
+  tls:
+   - hosts:
+     - nativecn.com
+     secretName: nativecn-tls
+  rules:
+  - host: nativecn.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: session-affinity
+            port:
+              number: 80

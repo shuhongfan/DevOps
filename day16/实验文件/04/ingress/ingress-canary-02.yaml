@@ -1,0 +1,32 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: canary-02-haha
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"  ## 代表这是金丝雀版本
+    nginx.ingress.kubernetes.io/canary-by-header: "haha"  
+    # nginx.ingress.kubernetes.io/canary-by-header-value: "hhhhh"
+    ## haha = always：流量路由到金丝雀版本
+    ## haha = never: 流量永远不会路由到金丝雀版本
+    nginx.ingress.kubernetes.io/canary-by-cookie: "cccc"
+    ## cccc = always：流量路由到金丝雀版本
+    ## cccc = never: 流量永远不会路由到金丝雀版本
+    nginx.ingress.kubernetes.io/canary-weight: "50"
+    ## 以上三个共同作用优先级如下 ：
+    ## canary-by-header -> canary-by-cookie -> canary-weight
+
+spec:
+  rules:
+  - host: test.canary.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: canary-v2-service
+            port:
+              number: 80

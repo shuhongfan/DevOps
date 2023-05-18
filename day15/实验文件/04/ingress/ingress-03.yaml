@@ -1,0 +1,26 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-222333
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: 1
+spec:
+  defaultBackend: ## 只要未指定的映射路径
+    service:
+      name: php-apache
+      port:
+        number: 80
+  rules:
+  - host: it666.com
+    http:
+      paths:
+      - path: /bbbbb
+        pathType: Prefix
+        backend:
+          service:
+            name: cluster-service-222
+            port:
+              number: 80

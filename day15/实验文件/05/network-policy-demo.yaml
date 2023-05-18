@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: networkpol-01
+  namespace: default
+spec:
+  podSelector:  ## pod选择器
+    matchLabels:
+       app: canary-nginx  ### 选中的Pod就被隔离起来  。他的service都不能给他流量了
+  policyTypes: 
+    - "Ingress"
+    - "Egress"  
+  ingress:  ## 入站白名单
+  - from: 
+      - podSelector:   ## 选中的Pod
+          matchLabels:
+            name: busybox   ## wget可以得到 canary-nginx 的内容
+      - namespaceSelector:   ## 选中的Pod
+          matchLabels:
+            kubernetes.io/metadata.name: hello   ## 这个hello名称空间的可以访问 canary-nginx 的内容
+      - ipBlock:
+          cidr: "192.168.0.0/16" ## 默认 从 192.168.0.0 - 192.168.255.255 都能访问这个Pod
+          except: ## 除过下面的范围
+            - "192.168.1.0/24"  ## 192.168.1.0-192.168.1.255  不能访问
+
+      ### 两个 - ,代表并集（或者）
+      ### 一个 - ，代表交集（且）
+    ports:
+      - port: 80
+  egress: ## 出站白名单
+  - to:  ## app: canary-nginx能访问哪些
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: hello  ## app: canary-nginx 能访问hello名称空间的所有
+    ports:
+      - port: 80
+    

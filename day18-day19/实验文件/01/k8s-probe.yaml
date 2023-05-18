@@ -1,0 +1,26 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-life
+  namespace: hello
+  labels:
+     aa: bb
+     bb: dd
+spec:  # 指定规格信息
+  containers:  # 指定要启动一个什么样的容器
+  - image: nginx  #指定镜像
+    name: nginx  #容器的名字 数据就在容器里面  docker run mysql.
+    ### 健康检查机制 。零 宕机
+    startupProbe: #启动探针 。看当前容器是否启动了
+      httpGet:
+      tcpSocket:
+      exec:
+    livenessProbe: #存活探针 。告诉kubelet容器活着没，如果容器死了，kubelet就会重启
+      httpGet:
+      tcpSocket:
+      exec:
+    readinessProbe: #就绪探针 。 告诉kubelet当前容器能否对外提供服务。
+      httpGet:
+      tcpSocket:
+      exec:
+

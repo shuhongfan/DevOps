@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluster-service-test
+  namespace: default
+spec:
+  selector:
+    app: canary-nginx
+  # clusterIP: 10.96.88.99 ## 不指定自动分配集群ip
+  clusterIP: None  ## 不要给这个svc分配ip。headless service无头服务配合有状态副本集StatefulSet
+  type: ClusterIP ## ClusterIP,ExternalName, NodePort, and LoadBalancer
+  ## ClusterIP：指，当前Service在集群内可以被所有人发现，默认给这个service分配一个集群内的网络
+  ## podcidr： Pod的子网范围   svccidr：Service的子网范围
+  ports:
+  - name: abc
+    port: 80  ## 访问当前service 的 80
+    targetPort: 80  ## 派发到Pod的8080
+  # ports:
+  # - name: abc
+  #   port: 80  ## 访问当前service 的 80
+  #   targetPort: 8080  ## 派发到Pod的8080
+  # - name: redis
+  #   port: 99
+  #   targetPort: 6379
+  ### Service  有IP，任意位置使用 ServiceIP可以负载均衡到Pod
+  ### Service  没有IP，在别的k8s资源里面使用 service 名字当成域名
+  

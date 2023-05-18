@@ -1,0 +1,6 @@
+commonLabels:
+  app: hello  # 构建出来的每个资源上都有app=hello标签
+resources:
+- deployment.yaml
+- service.yaml
+- configMap.yaml

@@ -1,0 +1,24 @@
+apiVersion: apps/v1  ### 
+kind: Deployment  ## 
+metadata:
+  name:  mydeploy-03   ### 遵循域名编写规范
+  namespace: default
+  labels:
+    dep:  test-02
+### 期望状态
+spec:
+  paused: false  ## 就是 kubectl rollout pause/resume 功能
+  progressDeadlineSeconds: 600 ## 
+  revisionHistoryLimit: 15  ### 保留最近的15个版本。 /etcd
+  selector:   ### 选择器，会被RS控制
+    matchLabels:  ### 匹配标签
+      pod-name:  aaaa  ### 和模板template里面的pod的标签必须一样
+  #### 
+  template:
+    metadata:  ### pod的metadata
+      labels:
+        pod-name:  aaaa
+    spec:
+      containers:
+      - name:  nginx-01
+        image:  nginx

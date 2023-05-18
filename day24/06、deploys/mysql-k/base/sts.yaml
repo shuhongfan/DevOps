@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql 
+  serviceName: "mysql"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mysql
+        image: mysql:8.0.25
+        # args: #mysql5.x版本需要以下设置项，否则不兼容ceph块存储
+        # - '--ignore-db-dir=lost+found'
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+        - name: mycnf
+          mountPath: /etc/mysql/my.cnf
+          subPath: my.cnf
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
+        - name: mycnf
+          configMap: 
+            name: myconf
+            items: 
+            - key: my.cnf
+              path: my.cnf
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "rook-ceph-block"
+      resources:
+        requests:
+          storage: 1Gi

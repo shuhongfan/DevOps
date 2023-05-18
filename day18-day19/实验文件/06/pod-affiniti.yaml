@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "busy-affinity-shib"
+  namespace: default
+  labels:
+    app: "busy-affinity-shib"
+spec:
+  containers:
+  - name: busy-affinity-shib
+    image: "busybox"
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:  ## 软性分
+      - preference: ## 指定我们喜欢的条件  shib
+          matchExpressions:
+          - key: disk
+            values: ["400"]
+            operator: Gt
+        weight: 90 ## 权重 0-100
+      - preference: ## 指定我们喜欢的条件
+          matchExpressions:
+          - key: gpu
+            values: ["40000"]
+            operator: Gt  ## node1的gpu不满足这个条件
+        weight: 10 ## 权重 0-100
+
+      # requiredDuringSchedulingIgnoredDuringExecution: ## 硬标准
+      #   nodeSelectorTerms:
+      #   - matchExpressions:
+      #       - key: disktype
+      #         values: ["ssd","hdd"]
+      #         operator: In
+              # In（disktype只要是"ssd"或者"hdd"）,
+              # NotIn（disktype只要不是"ssd"或者"hdd"）,
+              # Exists(disktype只要存在，无论值是什么，value不用写), 
+              # DoesNotExist(disktype只要不存在，无论值是什么，value不用写), 
+              # Gt（key大于指定的值的节点）, 
+              # Lt（key小于指定的值的节点）
+
+## FailedScheduling  26s   default-scheduler  0/3 nodes are available: 
+# 1 node(s) had taint {node-role.kubernetes.io/master: }, 
+# that the pod didn't tolerate, （一个节点不能调）
+# 2 node(s) didn't match Pod's node affinity/selector.（两个节点不满足）
+# kubectl 
+# 标签打上以后就分配成功
+
+            
+   

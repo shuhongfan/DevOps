@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-volume-12m-recycle
+  labels:
+    type: local
+spec:
+  persistentVolumeReclaimPolicy: Recycle  ## 回收
+  storageClassName: my-nfs-storage
+  capacity:
+    storage: 12m
+  accessModes:
+    - ReadWriteOnce 
+  nfs:  ## 使用nfs存储系统
+    server: 10.170.11.8  ## 没type
+    path: /nfs/data/recycle  ### abc文件夹提前创建
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-12-recycle
+  namespace: default
+  labels:
+    app: pv-12-recycle
+spec:
+  storageClassName: my-nfs-storage  ### pv分组
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 12m

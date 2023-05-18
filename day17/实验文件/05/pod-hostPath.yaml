@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "pod-time"
+  namespace: default
+  labels:
+    app: "pod-time"
+spec:
+  containers:
+  - name: pod-time
+    image: "busybox"
+    command: ["sleep","60000"]
+    volumeMounts: ## 描述容器想把自己的哪个路径进行挂载
+    - name: localtime
+      mountPath: /etc/localtime  ## 挂到容器的这个位置
+      # subPath: localtime  ## /etc/localtime
+  volumes:  ## 描述每个volumeMounts到底该怎么挂载
+    - name: localtime
+      hostPath:  ## 主机的这个文件  
+        path: /usr/share/zoneinfo/Asia/Shanghai
+        type: Directory  ### 到底是什么。文件/文件夹 .....
+
+

@@ -1,0 +1,33 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: my-life
+  namespace: hello
+  labels:
+     aa: bb
+     bb: dd
+spec:  # 指定规格信息
+  containers:  # 指定要启动一个什么样的容器
+  - image: nginx  #指定镜像
+    name: nginx  #容器的名字 数据就在容器里面  docker run mysql.
+    lifecycle:
+      postStart:
+        # httpGet:
+        #   port: 80
+        #   path: "http://192.168.169.160/postStart"
+        httpGet: 
+           host: "192.168.169.160"
+           path: "/postStart"
+           port: 80
+           scheme: HTTP
+
+        # exec:  容器创建之后，这个钩子程序执行一个命令  echo 1111
+        # httpGet: 容器创建之后，这个钩子程序发送一个httpGet 请求
+        # tcpSocket： 容器创建之后，这个钩子程序连上一个TCP端口
+      preStop:  ## 
+        httpGet: 
+           host: "192.168.169.160"
+           path: "/preStop"
+           port: 80
+           scheme: HTTP
+

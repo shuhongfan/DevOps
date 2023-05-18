@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluster-service-222
+  namespace: default
+spec:
+  selector:
+    app: canary-nginx
+  type: NodePort  ## 每一台机器都为这个service随机分配一个指定的端口
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+    # nodePort: 不指定默认会在  30000-32765这个范围内随机分配
+    nodePort: 31110  ### 集群中的所有机器都会打开这个端口，访问k8s集群中任意一台机器，
+    ## 能访问到Service代理的Pod

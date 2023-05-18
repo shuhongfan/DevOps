@@ -1,0 +1,7 @@
+commonLabels:
+  app: kibana  # 所有资源都打上了kibana标签
+resources:
+- deploy.yaml
+- service.yaml
+- ingress.yaml
+#需要自己提前创建itdachang.com的tls secret

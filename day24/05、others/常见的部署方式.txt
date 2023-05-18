@@ -1,0 +1,33 @@
+1、简单微服务：自己写 Deployment（无状态）、StatefulSet（有状态）之类的文件
+	问题：Deployment-Redis。多环境适配没法做
+	
+	
+2、Helm。一般第三方应用都做好了镜像
+		1、下载包
+		2、再根据values.yaml文件，抽取一个自己的需要改的配置项override.yaml
+	一系列的部署（中大型应用【中间件】）
+	MySQL集群，Redis集群
+	
+	
+
+3、第三方的组件过来怎么部署到k8s上？？？？
+    1、docker run能出来的，k8s都能出来
+	2、deploy,sts
+	3、gitlab、harbor推荐可以专门部署到某些机器，可以不用k8s集群管理
+
+4、kustomize：
+	自己写一堆部署（service,deploy,redis,xxxx），还能多环境适配
+	docker-compose
+	k8s的compose就是 kustomize
+	kubectl apply -k kustomize文件夹。全部部署
+	
+5、operator：最高级和智能的
+	比如：helm  prometheus-stack-kube-prom-operator
+	比如：ECK 提供 operator 协助部署整个es技术栈产品
+	
+
+	
+
+
+
+

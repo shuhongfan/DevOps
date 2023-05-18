@@ -1,0 +1,5 @@
+commonLabels:
+  app: elasticsearch  # 构建出来的每个资源上都有app=hello标签
+resources:
+- master-node.yaml
+- service.yaml

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ds-test
+  namespace: default
+  labels:
+    app: ds-test
+spec:
+  selector:
+    matchLabels:
+      app: ds-test
+  template:
+    metadata:
+      labels:
+        app: ds-test
+    spec:
+      containers:
+      - name: ds-test
+        image: nginx
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: MYAPP
+#   namespace: default
+# spec:
+#   selector:
+#     app: MYAPP
+#   type: ClusterIP
+#   ports:
+#   - name: MYAPP
+#     port: 
+#     targetPort: 
+#     protocol: TCP
+#     nodePort: 
+# --- 
+# kind: ConfigMap
+# apiVersion: v1
+# metadata:
+#   name: CM
+#   namespace: default
+# data:
+#   key: default
+
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: "MYAPP"
+#   namespace: default
+#   labels:
+#     app: "MYAPP"
+# spec:
+#   containers:
+#   - name: MYAPP
+#     image: "debian-slim:latest"
+#     resources:
+#       limits:
+#         cpu: 200m
+#         memory: 500Mi
+#       requests:
+#         cpu: 100m
+#         memory: 200Mi
+#     env:
+#     - name: my_pwd
+#       value: 123456
+#     ports:
+#     - containerPort:  80
+#       name:  http
+#     volumeMounts:
+#     - name: localtime
+#       mountPath: /etc/localtime
+#   volumes:
+#     - name: localtime
+#       hostPath:
+#         path: /usr/share/zoneinfo/Asia/Shanghai
+#   restartPolicy: Always

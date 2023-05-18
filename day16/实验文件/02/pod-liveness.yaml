@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  containers:
+  - name: liveness
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 18; rm -rf /tmp/healthy; sleep 600
+    # 创建一个文件；睡30s；文件又删除，睡600秒
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5  #容器启动RUNNING 5秒以后再来探测
+      periodSeconds: 5 #每隔5秒探测一次

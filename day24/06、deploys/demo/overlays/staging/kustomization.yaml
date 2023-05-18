@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namePrefix: staging-   #所有资源的前缀
+commonLabels:   #所有资源的标签
+  variant: staging   
+  org: acmeCorporation
+commonAnnotations:  #所有资源的注解
+  note: Hello, I am staging!
+bases:
+- ../../base  #基础配置的位置
+patchesStrategicMerge:
+- map.yaml  #需要额外引入部署的内容，如果引入的内容基础内容有配置，则使用这个最新的

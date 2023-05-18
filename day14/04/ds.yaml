@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ds-test
+  namespace: default
+  labels:
+    app: ds-test
+spec:
+  selector:
+    matchLabels:
+      app: ds-test
+  template:
+    metadata:
+      labels:
+        app: ds-test
+    spec:
+      containers:
+      - name: ds-test
+        image: nginx

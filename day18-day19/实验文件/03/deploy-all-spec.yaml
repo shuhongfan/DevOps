@@ -1,0 +1,30 @@
+   # Deployment：
+   # 滚动更新：   10   2 - 8  4 ，  2 4   0 - 10
+   # RS1  RS2 两个版本同时存在
+   
+   minReadySeconds: 10  这个Pod10s以后才认为是read状态，影响多久后杀死旧Pod
+
+   paused	<boolean>: false 当前是否停止状态，暂停更新
+
+   progressDeadlineSeconds: 600  处理的最终期限，Deployment如果超过了这个指定的处理描述就会给集群汇报错误
+     The maximum time in seconds for a deployment to make progress before it is
+     considered to be failed. The deployment controller will continue to process
+     failed deployments and a condition with a ProgressDeadlineExceeded reason
+     will be surfaced in the deployment status. Note that progress will not be
+     estimated during the time a deployment is paused. Defaults to 600s.
+
+   replicas	<integer>:  Pod 期望的数量（副本数量），是  ReplicaSet  控制器实现的
+
+   revisionHistoryLimit	<integer>: 旧副本集保留的数量，可回滚的数量，默认是10
+
+   selector	<Object> -required-: 指定我们Deployment要控制的所有的Pod的共通标签
+
+   strategy	<Object>: 指定新Pod替换旧Pod的策略
+      rollingUpdate	<Object>: 指定滚动更新策略
+           maxSurge	<string>【最大增量】: 2 一次最多新建几个Pod。 百分比和数字都可以
+              MaxUnavailable：为0 的时候， maxSurge不能为0
+           maxUnavailable【最大不可用量】: 4 最大不可用的Pod数量
+      type	<string>: Recreate/RollingUpdate（默认）
+
+
+   template	<Object> -required-: 编写Pod

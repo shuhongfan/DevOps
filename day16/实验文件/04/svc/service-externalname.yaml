@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-externalname-test
+  namespace: default
+spec:
+  type: ExternalName  ## 外部的名字
+  externalName: baidu.com   
+  ### 无selector，自己写EP。只能写域名。web服务。注意跨域问题
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: service-externalname-test
+#   namespace: default
+# spec:
+    # selector: 
+    #    app: nginx
+#   type: LoadBalancer  ## 负载均衡，开放给云平台实现，阿里云、百度云、青云
+    # ports:
+    #    port: 80
+    #    target: 888
+  ## k8s自动请求云平台，分配一个负载均衡器

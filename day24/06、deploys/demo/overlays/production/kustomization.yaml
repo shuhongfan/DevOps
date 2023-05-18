@@ -1,0 +1,12 @@
+
+# 生产环境所有资源名加一个前缀
+namePrefix: production-
+commonLabels:
+  variant: production
+  org: acmeCorporation
+commonAnnotations:
+  note: Hello, I am production!
+bases:
+- ../../base
+patchesStrategicMerge:
+- deployment.yaml

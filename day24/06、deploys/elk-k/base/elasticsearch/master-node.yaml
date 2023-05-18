@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch-master
+spec:
+  serviceName: elasticsearch-cluster
+  replicas: 3
+  selector:
+    matchLabels:
+      app: elasticsearch
+      role: master
+  template:
+    metadata:
+      name: elasticsearch-master
+      labels:
+        app: elasticsearch
+        role: master
+    spec:
+      initContainers:
+      - command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        image: elasticsearch:7.13.1
+        imagePullPolicy: IfNotPresent
+        name: configure-sysctl
+        resources: {}
+        securityContext:
+          privileged: true
+          procMount: Default
+          runAsUser: 0   
+      containers:
+      - image: elasticsearch:7.13.1
+        name: es
+        ports:
+        - containerPort: 9200
+          name: http
+          protocol: TCP
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1000Mi
+          requests:
+            cpu: 300m
+            memory: 1000Mi
+        env:
+        - name: network.host
+          value: "0.0.0.0"
+        - name: node.name
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: cluster.initial_master_nodes
+          value: elasticsearch-master-0,elasticsearch-master-1,elasticsearch-master-2
+        - name: discovery.seed_hosts
+          value: elasticsearch-cluster
+        - name: cluster.name
+          value: "elasticsearch-cluster"
+        - name: node.master
+          value: "true"
+        - name: node.data
+          value: "true"
+        - name: node.ingest
+          value: "true"
+        - name: ES_JAVA_OPTS
+          value: "-Xms500m -Xmx500m"
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: elastic-master-storage
+          mountPath: /usr/share/elasticsearch/data
+      securityContext:
+        fsGroup: 1000
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
+  volumeClaimTemplates:
+  - metadata:
+      name: elastic-master-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "rook-ceph-block"
+      resources:
+        requests:
+          storage: 2Gi

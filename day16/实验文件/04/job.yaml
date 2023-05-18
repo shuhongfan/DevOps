@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-test-04
+spec:
+  completions: 5  ## 前一次必须结束才会下一次
+  parallelism: 3
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: busybox  ## job类型的pod，不要用阻塞式的。如nginx。Deployment才应该是阻塞式的
+        command: ["/bin/sh","-c","ping -c 10 baidu.com"]
+      restartPolicy: Never #Job情况下，不支持Always
+  # backoffLimit: 4 #任务4次都没成，认为失败
+  activeDeadlineSeconds: 600    ## 整个Job的存活时间，超出就自动杀死
+  ttlSecondsAfterFinished: 10  ### 运行完成后自己删除
